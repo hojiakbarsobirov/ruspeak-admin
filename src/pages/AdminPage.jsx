@@ -1,3 +1,4 @@
+// AdminPage.jsx
 import React, { useEffect, useState } from "react";
 import { db } from "../firebase";
 import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
@@ -25,7 +26,7 @@ const AdminPage = () => {
     try {
       const snapshot = await getDocs(collection(db, "registrations"));
       const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-      data.sort((a, b) => b.createdAt?.seconds - a.createdAt?.seconds);
+      data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       setUsers(data);
     } catch (error) {
       console.error("Xatolik:", error);
@@ -55,9 +56,22 @@ const AdminPage = () => {
       u.phone?.includes(search)
   );
 
+  // Vaqtni O‘zbekiston formatida konvertatsiya qilish
+  const formatUzTime = (timestamp) => {
+    if (!timestamp) return "-";
+    const date = new Date(timestamp);
+    // UTC+5 Tashkent uchun offset
+    const uzDate = new Date(date.getTime() + 0 * 60 * 60 * 1000);
+    const day = String(uzDate.getDate()).padStart(2, "0");
+    const month = String(uzDate.getMonth() + 1).padStart(2, "0");
+    const year = uzDate.getFullYear();
+    const hours = String(uzDate.getHours()).padStart(2, "0");
+    const minutes = String(uzDate.getMinutes()).padStart(2, "0");
+    return `${day}.${month}.${year} - ${hours}:${minutes}`;
+  };
+
   return (
     <div className="min-h-screen w-full bg-gray-100 flex flex-col">
-      {/* Modal oynalar */}
       <ConfirmModal
         show={showModal}
         onClose={() => setShowModal(false)}
@@ -69,10 +83,8 @@ const AdminPage = () => {
         onConfirm={handleLogout}
       />
 
-      {/* Header */}
       <header className="bg-white text-white p-4 flex flex-col sm:flex-row justify-between items-center">
-        {/* <h1 className="text-2xl sm:text-3xl font-bold">RuSpeak Admin Panel</h1> */}
-        <img className="w-[200px]" src="/logotip.png" alt="" />
+        <img className="w-[200px]" src="/logotip.png" alt="logo" />
         <div className="flex gap-2 mt-2 sm:mt-0">
           <button
             onClick={fetchUsers}
@@ -89,7 +101,6 @@ const AdminPage = () => {
         </div>
       </header>
 
-      {/* Qidiruv */}
       <div className="p-4 border-b border-gray-300">
         <input
           type="text"
@@ -100,20 +111,23 @@ const AdminPage = () => {
         />
       </div>
 
-      {/* Jadval */}
       <div className="flex-1 overflow-auto">
         {loading ? (
-          <p className="text-center text-gray-500 py-10">⏳ Ma’lumotlar yuklanmoqda...</p>
+          <p className="text-center text-gray-500 py-10">
+            ⏳ Ma’lumotlar yuklanmoqda...
+          </p>
         ) : filteredUsers.length === 0 ? (
-          <p className="text-center text-gray-500 py-10">Hech qanday foydalanuvchi topilmadi 😕</p>
+          <p className="text-center text-gray-500 py-10">
+            Hech qanday foydalanuvchi topilmadi 😕
+          </p>
         ) : (
           <table className="w-full border-collapse border border-gray-300">
             <thead className="bg-gray-200 text-gray-800">
               <tr>
                 <th className="border p-2 text-left">Ism</th>
                 <th className="border p-2 text-left">Telefon</th>
-                <th className="border p-2 text-left">Qo‘shimcha raqam</th>
-                <th className="border p-2 text-left">Sana</th>
+                <th className="border p-2 text-left">Tg | Whatsapp raqam</th>
+                <th className="border p-2 text-left">Yuborilgan sana</th>
                 <th className="border p-2 text-center">Harakat</th>
               </tr>
             </thead>
@@ -123,7 +137,7 @@ const AdminPage = () => {
                   <td className="border p-2">{user.name}</td>
                   <td className="border p-2">{user.phone}</td>
                   <td className="border p-2">{user.extraPhone || "-"}</td>
-                  <td className="border p-2">{user.createdAt?.seconds ? new Date(user.createdAt.seconds * 1000).toLocaleString() : "-"}</td>
+                  <td className="border p-2">{formatUzTime(user.createdAt)}</td>
                   <td className="border p-2 text-center">
                     <button
                       onClick={() => {
@@ -132,7 +146,7 @@ const AdminPage = () => {
                       }}
                       className="px-2 py-1 bg-red-600 hover:bg-red-700 text-white rounded"
                     >
-                      🗑 O‘chirish
+                       O‘chirish 🗑
                     </button>
                   </td>
                 </tr>
@@ -142,7 +156,6 @@ const AdminPage = () => {
         )}
       </div>
 
-      {/* Footer */}
       <footer className="bg-gray-800 text-white p-3 text-center">
         © {new Date().getFullYear()} Admin Panel
       </footer>
