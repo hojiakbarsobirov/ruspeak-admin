@@ -8,8 +8,8 @@ const LoginPage = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const ADMIN_LOGIN = "ruspeakadmin"; // 🔐 login
-  const ADMIN_PASSWORD = "ruspeak123"; // 🔐 parol
+  const ADMIN_LOGIN = "ruspeakadmin"; // login
+  const ADMIN_PASSWORD = "ruspeak123"; // parol
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -22,7 +22,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-400 to-orange-600 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br  px-4">
       <div className="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-md">
         <h1 className="text-3xl font-bold text-center text-gray-800 mb-2">
           Ruspeak Admin
@@ -32,7 +32,7 @@ const LoginPage = () => {
         </p>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <div className="flex items-center border border-gray-300 rounded-xl px-4 py-3 focus-within:border-orange-500 transition-all">
+          <div className="flex items-center border border-gray-300 rounded-xl px-4 py-3 focus-within:border-blue-500 transition-all">
             <FiUser className="text-gray-400 text-xl mr-2" />
             <input
               type="text"
@@ -44,7 +44,7 @@ const LoginPage = () => {
             />
           </div>
 
-          <div className="flex items-center border border-gray-300 rounded-xl px-4 py-3 focus-within:border-orange-500 transition-all">
+          <div className="flex items-center border border-gray-300 rounded-xl px-4 py-3 focus-within:border-blue-500 transition-all">
             <FiLock className="text-gray-400 text-xl mr-2" />
             <input
               type="password"
@@ -60,7 +60,7 @@ const LoginPage = () => {
 
           <button
             type="submit"
-            className="mt-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-xl transition-all shadow-md hover:shadow-lg"
+            className="mt-3 bg-blue-500 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition-all shadow-md hover:shadow-lg"
           >
             Tizimga kirish →
           </button>
